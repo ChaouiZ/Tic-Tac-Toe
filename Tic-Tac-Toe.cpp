@@ -63,8 +63,6 @@ Win Conditions:
 
 int main()
 {   
-
-    printBoard();
     game();
 
     return 0;
