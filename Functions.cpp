@@ -2,46 +2,89 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <iomanip>
 #include "header.h" 
 
 std::vector<int> occupiedSpaces;
 std::vector<int> player1Spaces;
 std::vector<int> player2Spaces;
 
-std::string board1 = "         ^   ^\n";
-std::string board2 = "         |   |   \n";
-std::string board3 = "    < - - - - - - >\n";
-std::string board4 = "         |   |  \n";
-std::string board5 = "    < - - - - - - >\n";
-std::string board6 = "         |   |  \n";
-std::string board7 = "         #   # \n\n";
+std::string board1 = "\n\n                                                          ^   ^\n";
+std::string board2 = "                                                        7 | 8 | 9 \n";
+std::string board3 = "                                                     < - - - - - - >\n";
+std::string board4 = "                                                        4 | 5 | 6\n";
+std::string board5 = "                                                     < - - - - - - >\n";
+std::string board6 = "                                                        1 | 2 | 3\n";
+std::string board7 = "                                                          #   # \n\n";
+
+bool gameActive = true;
 
 void game() {
 
-	playerOneSelect();
-	playerTwoSelect();
-	updateBoard1();
-	updateBoard2();
-	printBoard();
+	if(gameActive){
+		playerOneSelect();
+		updateBoard1();
+		printBoard();
+	}
+	
+	
+	if(gameActive){
+		playerTwoSelect();
+		updateBoard2();
+		printBoard();
+	}
+
+
 	displayScore();
 
 
 }
 
 void playerOneSelect() {
-	std::cout << " Player 1: Enter a space. (1 - 9)\n";
+	std::cout << std::setw(79) << std::setfill(' ') << "Player 1: Enter a space.  (1 - 9)\n\n" <<
+		"                                                            ";
 	int spaceSelection1;
 	std::cin >> spaceSelection1;
 
 	for (int i : occupiedSpaces) {
 		if (i == spaceSelection1) {
-			std::cout << "That space is already taken. Try again.\n\n";
+			std::cout << std::setw(79) << std::setfill(' ') <<
+				"That space is already taken. Try again.\n\n";
 			playerOneSelect();
 			return;
 		}
 	}
+	if (spaceSelection1 > 9 || spaceSelection1 < 1) {
+		std::cout << std::endl << std::setw(93) << std::setfill(' ') <<
+			"Invalid entry. Must be an integer between 1 and 9. Try again.\n\n";
+		playerOneSelect();
+		return;
+	}
+
+
 	player1Spaces.push_back(spaceSelection1);
 	occupiedSpaces.push_back(spaceSelection1);
+
+	if(player1Spaces.size() > 2) {
+		bool check1 = winChecker(player1Spaces);
+
+		if (check1) {
+			std::cout << "\n\n\n" << std::setw(67) << std::setfill(' ') << "Player 1 Wins!";
+			gameActive = false;
+			return;
+		}
+
+		if (player1Spaces.size() == 5) {
+
+			bool checkTie = winChecker(player1Spaces);
+
+			if (!checkTie) {
+				std::cout << "\n\n\n" << std::setw(63) << std::setfill(' ') << "Draw!";
+				gameActive = false;
+				return;
+			}
+		}
+	}
 
 
 }
@@ -49,13 +92,15 @@ void playerOneSelect() {
 void playerTwoSelect() {
 
 	if (player1Spaces.size() < 5) {
-		std::cout << " Player 2: Enter a space. (1 - 9)\n";
+		std::cout << std::setw(79) << std::setfill(' ') << "Player 2: Enter a space.  (1 - 9)\n\n" << 
+			"                                                            ";
 		int spaceSelection2;
 		std::cin >> spaceSelection2;
 
 		for (int i : occupiedSpaces) {
 			if (i == spaceSelection2) {
-				std::cout << "That space is already taken. Try again.\n\n";
+				std::cout << std::setw(79) << std::setfill(' ') << 
+					"That space is already taken. Try again.\n\n";
 				playerTwoSelect();
 				return;
 			}
@@ -66,83 +111,27 @@ void playerTwoSelect() {
 
 		std::cout << "\n\n";
 	}
+
+	if (player2Spaces.size() > 2) {
+		bool check2 = winChecker(player2Spaces);
+
+		if (check2) {
+			std::cout << "\n\n\n" << std::setw(67) << std::setfill(' ') << "Player 2 Wins!";
+			gameActive = false;
+			return;
+		}
+	}
+
 	return;
 
 }
 
 void displayScore() {
 
-
-
-	if (player1Spaces.size() == 1) {
-		std::cout << "Player 1 opens with space ";
-
-		for (int i : player1Spaces) {
-			std::cout << i;
-			std::cout << "\n\n";
-
-		}
-	}
-
-	if (player2Spaces.size() == 1) {
-		std::cout << "Player 2 opens with space ";
-
-		for (int i : player2Spaces) {
-			std::cout << i;
-			std::cout << "\n\n";
-			game();
-			return;
-		}
-	}
-
-	if (player1Spaces.size() == 2) {
-		std::cout << "Player 1 has spaces ";
-
-		for (int i : player1Spaces) {
-			std::cout << i;
-
-			if (i != player1Spaces.back()) {
-				std::cout << " and ";
-			}
-		}
-		std::cout << "\n\n";
-
-	}
-
-	if (player2Spaces.size() == 2) {
-		std::cout << "Player 2 has spaces ";
-
-		for (int i : player2Spaces) {
-			std::cout << i;
-
-			if (i != player2Spaces.back()) {
-				std::cout << " and ";
-			}
-		}
-		std::cout << "\n\n";
+	if (gameActive) {
 		game();
-		return;
 	}
-
-	if (player1Spaces.size() > 2 && player1Spaces.size() < 5) {
-		std::cout << "Player 1 has spaces ";
-		for (int i : player1Spaces) {
-			std::cout << i << ", ";
-		}
-		std::cout << "\n\n";
-		game();
-		return;
-	}
-
-	if (player2Spaces.size() > 2 && player1Spaces.size() < 4) {
-		std::cout << "Player 2 has spaces ";
-		for (int i : player2Spaces) {
-			std::cout << i << ", ";
-		}
-		std::cout << "\n\n";
-		game();
-		return;
-	}
+	return;
 
 	if (player1Spaces.size() == 5) {
 
@@ -158,8 +147,8 @@ void displayScore() {
 		}
 		std::cout << "\n\n";
 
-		bool player1Result = winChecker(stringify(player1Spaces));
-		bool player2Result = winChecker(stringify(player2Spaces));
+		bool player1Result = winChecker(player1Spaces);
+		bool player2Result = winChecker(player2Spaces);
 
 		if (player1Result) {
 			std::cout << "Player 1 Wins!\n\n";
@@ -170,7 +159,7 @@ void displayScore() {
 			return;
 		}
 		else {
-			std::cout << "Draw!\n\n";
+			std::cout << std::setw(79) << std::setfill(' ') << "Draw!\n\n";
 
 		}
 	}
@@ -181,6 +170,7 @@ std::string stringify(std::vector<int> myVec) {
 	std::sort(myVec.begin(), myVec.end());
 
 	std::string score;
+	
 
 	for (int i : myVec) {
 		score += std::to_string(i);
@@ -189,10 +179,10 @@ std::string stringify(std::vector<int> myVec) {
 
 }
 
-bool winChecker(std::string str) {
+bool winChecker(std::vector<int> playerVec) {
 
-	if (str == "123" || str == "159" || str == "147" || str == "456" ||
-		str == "789" || str == "258" || str == "369" || str == "357") {
+	if (check159(playerVec) || check147(playerVec) || check258(playerVec) || check369(playerVec) ||
+		check357(playerVec) || checkLinearConditions(playerVec)) {
 		return true;
 	}
 	return false;
@@ -221,31 +211,31 @@ void updateBoard1() {
 		switch (player1choice) {
 
 		case 1:
-			board2.replace(7, 1, "X");
+			board6.replace(56, 1, "X");
 			break;
 		case 2:
-			board2.replace(11, 1, "X");
+			board6.replace(60, 1, "X");
 			break;
 		case 3:
-			board2.replace(15, 1, "X");
+			board6.replace(64, 1, "X");
 			break;
 		case 4:
-			board4.replace(7, 1, "X");
+			board4.replace(56, 1, "X");
 			break;
 		case 5:
-			board4.replace(11, 1, "X");
+			board4.replace(60, 1, "X");
 			break;
 		case 6:
-			board4.replace(15, 1, "X");
+			board4.replace(64, 1, "X");
 			break;
 		case 7:
-			board6.replace(7, 1, "X");
+			board2.replace(56, 1, "X");
 			break;
 		case 8:
-			board6.replace(11, 1, "X");
+			board2.replace(60, 1, "X");
 			break;
 		case 9:
-			board6.replace(15, 1, "X");
+			board2.replace(64, 1, "X");
 			break;
 		}
 
@@ -257,31 +247,31 @@ void updateBoard1() {
 		switch (player1choice) {
 
 		case 1:
-			board2.replace(7, 1, "X");
+			board6.replace(56, 1, "X");
 			break;
 		case 2:
-			board2.replace(11, 1, "X");
+			board6.replace(60, 1, "X");
 			break;
 		case 3:
-			board2.replace(15, 1, "X");
+			board6.replace(64, 1, "X");
 			break;
 		case 4:
-			board4.replace(7, 1, "X");
+			board4.replace(56, 1, "X");
 			break;
 		case 5:
-			board4.replace(11, 1, "X");
+			board4.replace(60, 1, "X");
 			break;
 		case 6:
-			board4.replace(15, 1, "X");
+			board4.replace(64, 1, "X");
 			break;
 		case 7:
-			board6.replace(7, 1, "X");
+			board2.replace(56, 1, "X");
 			break;
 		case 8:
-			board6.replace(11, 1, "X");
+			board2.replace(60, 1, "X");
 			break;
 		case 9:
-			board6.replace(15, 1, "X");
+			board2.replace(64, 1, "X");
 			break;
 		}
 
@@ -293,31 +283,103 @@ void updateBoard1() {
 		switch (player1choice) {
 
 		case 1:
-			board2.replace(7, 1, "X");
+			board6.replace(56, 1, "X");
 			break;
 		case 2:
-			board2.replace(11, 1, "X");
+			board6.replace(60, 1, "X");
 			break;
 		case 3:
-			board2.replace(15, 1, "X");
+			board6.replace(64, 1, "X");
 			break;
 		case 4:
-			board4.replace(7, 1, "X");
+			board4.replace(56, 1, "X");
 			break;
 		case 5:
-			board4.replace(11, 1, "X");
+			board4.replace(60, 1, "X");
 			break;
 		case 6:
-			board4.replace(15, 1, "X");
+			board4.replace(64, 1, "X");
 			break;
 		case 7:
-			board6.replace(7, 1, "X");
+			board2.replace(56, 1, "X");
 			break;
 		case 8:
-			board6.replace(11, 1, "X");
+			board2.replace(60, 1, "X");
 			break;
 		case 9:
-			board6.replace(15, 1, "X");
+			board2.replace(64, 1, "X");
+			break;
+		}
+
+	}
+
+	if (player1Spaces.size() == 4) {
+		int player1choice = player1Spaces.at(3);
+
+		switch (player1choice) {
+
+		case 1:
+			board6.replace(56, 1, "X");
+			break;
+		case 2:
+			board6.replace(60, 1, "X");
+			break;
+		case 3:
+			board6.replace(64, 1, "X");
+			break;
+		case 4:
+			board4.replace(56, 1, "X");
+			break;
+		case 5:
+			board4.replace(60, 1, "X");
+			break;
+		case 6:
+			board4.replace(64, 1, "X");
+			break;
+		case 7:
+			board2.replace(56, 1, "X");
+			break;
+		case 8:
+			board2.replace(60, 1, "X");
+			break;
+		case 9:
+			board2.replace(64, 1, "X");
+			break;
+		}
+
+	}
+
+	if (player1Spaces.size() == 5) {
+		int player1choice = player1Spaces.at(4);
+
+		switch (player1choice) {
+
+		case 1:
+			board6.replace(56, 1, "X");
+			break;
+		case 2:
+			board6.replace(60, 1, "X");
+			break;
+		case 3:
+			board6.replace(64, 1, "X");
+			break;
+		case 4:
+			board4.replace(56, 1, "X");
+			break;
+		case 5:
+			board4.replace(60, 1, "X");
+			break;
+		case 6:
+			board4.replace(64, 1, "X");
+			break;
+		case 7:
+			board2.replace(56, 1, "X");
+			break;
+		case 8:
+			board2.replace(60, 1, "X");
+			break;
+		case 9:
+			board2.replace(64, 1, "X");
 			break;
 		}
 
@@ -331,31 +393,31 @@ void updateBoard2() {
 		switch (player2choice) {
 
 		case 1:
-			board2.replace(7, 1, "O");
+			board6.replace(56, 1, "O");
 			break;
 		case 2:
-			board2.replace(11, 1, "O");
+			board6.replace(60, 1, "O");
 			break;
 		case 3:
-			board2.replace(15, 1, "O");
+			board6.replace(64, 1, "O");
 			break;
 		case 4:
-			board4.replace(7, 1, "O");
+			board4.replace(56, 1, "O");
 			break;
 		case 5:
-			board4.replace(11, 1, "O");
+			board4.replace(60, 1, "O");
 			break;
 		case 6:
-			board4.replace(15, 1, "O");
+			board4.replace(64, 1, "O");
 			break;
 		case 7:
-			board6.replace(7, 1, "O");
+			board2.replace(56, 1, "O");
 			break;
 		case 8:
-			board6.replace(11, 1, "O");
+			board2.replace(60, 1, "O");
 			break;
 		case 9:
-			board6.replace(15, 1, "O");
+			board2.replace(64, 1, "O");
 			break;
 		}
 
@@ -367,31 +429,31 @@ void updateBoard2() {
 		switch (player2choice) {
 
 		case 1:
-			board2.replace(7, 1, "O");
+			board6.replace(56, 1, "O");
 			break;
 		case 2:
-			board2.replace(11, 1, "O");
+			board6.replace(60, 1, "O");
 			break;
 		case 3:
-			board2.replace(15, 1, "O");
+			board6.replace(64, 1, "O");
 			break;
 		case 4:
-			board4.replace(7, 1, "O");
+			board4.replace(56, 1, "O");
 			break;
 		case 5:
-			board4.replace(11, 1, "O");
+			board4.replace(60, 1, "O");
 			break;
 		case 6:
-			board4.replace(15, 1, "O");
+			board4.replace(64, 1, "O");
 			break;
 		case 7:
-			board6.replace(7, 1, "O");
+			board2.replace(56, 1, "O");
 			break;
 		case 8:
-			board6.replace(11, 1, "O");
+			board2.replace(60, 1, "O");
 			break;
 		case 9:
-			board6.replace(15, 1, "O");
+			board2.replace(64, 1, "O");
 			break;
 		}
 
@@ -403,31 +465,67 @@ void updateBoard2() {
 		switch (player2choice) {
 
 		case 1:
-			board2.replace(7, 1, "O");
+			board6.replace(56, 1, "O");
 			break;
 		case 2:
-			board2.replace(11, 1, "O");
+			board6.replace(60, 1, "O");
 			break;
 		case 3:
-			board2.replace(15, 1, "O");
+			board6.replace(64, 1, "O");
 			break;
 		case 4:
-			board4.replace(7, 1, "O");
+			board4.replace(56, 1, "O");
 			break;
 		case 5:
-			board4.replace(11, 1, "O");
+			board4.replace(60, 1, "O");
 			break;
 		case 6:
-			board4.replace(15, 1, "O");
+			board4.replace(64, 1, "O");
 			break;
 		case 7:
-			board6.replace(7, 1, "O");
+			board2.replace(56, 1, "O");
 			break;
 		case 8:
-			board6.replace(11, 1, "O");
+			board2.replace(60, 1, "O");
 			break;
 		case 9:
-			board6.replace(15, 1, "O");
+			board2.replace(64, 1, "O");
+			break;
+		}
+
+	}
+
+	if (player2Spaces.size() == 4) {
+		int player2choice = player2Spaces.at(3);
+
+		switch (player2choice) {
+
+		case 1:
+			board6.replace(56, 1, "O");
+			break;
+		case 2:
+			board6.replace(60, 1, "O");
+			break;
+		case 3:
+			board6.replace(64, 1, "O");
+			break;
+		case 4:
+			board4.replace(56, 1, "O");
+			break;
+		case 5:
+			board4.replace(60, 1, "O");
+			break;
+		case 6:
+			board4.replace(64, 1, "O");
+			break;
+		case 7:
+			board2.replace(56, 1, "O");
+			break;
+		case 8:
+			board2.replace(60, 1, "O");
+			break;
+		case 9:
+			board2.replace(64, 1, "O");
 			break;
 		}
 
@@ -435,3 +533,151 @@ void updateBoard2() {
 }
 
 
+bool check159(std::vector<int> myVec) {
+
+	std::vector<int> newVec;
+
+	for (int i : myVec) {
+
+		if (i == 1) {
+			newVec.push_back(i);
+		}
+		if (i == 5) {
+			newVec.push_back(i);
+		}
+		if (i == 9) {
+			newVec.push_back(i);
+		}
+
+	}
+
+	std::string vecString = stringify(newVec);
+
+	if (vecString == "159") {
+		return true;
+	}
+	return false;
+}
+bool check147(std::vector<int> myVec) {
+
+	std::vector<int> newVec;
+
+	for (int i : myVec) {
+
+		if (i == 1) {
+			newVec.push_back(i);
+		}
+		if (i == 4) {
+			newVec.push_back(i);
+		}
+		if (i == 7) {
+			newVec.push_back(i);
+		}
+
+	}
+
+	std::string vecString = stringify(newVec);
+
+	if (vecString == "147") {
+		return true;
+	}
+	return false;
+}
+bool check258(std::vector<int> myVec) {
+
+	std::vector<int> newVec;
+
+	for (int i : myVec) {
+
+		if (i == 2) {
+			newVec.push_back(i);
+		}
+		if (i == 5) {
+			newVec.push_back(i);
+		}
+		if (i == 8) {
+			newVec.push_back(i);
+		}
+
+	}
+
+	std::string vecString = stringify(newVec);
+
+	if (vecString == "258") {
+		return true;
+	}
+	return false;
+}
+bool check369(std::vector<int> myVec) {
+
+	std::vector<int> newVec;
+
+	for (int i : myVec) {
+
+		if (i == 3) {
+			newVec.push_back(i);
+		}
+		if (i == 6) {
+			newVec.push_back(i);
+		}
+		if (i == 9) {
+			newVec.push_back(i);
+		}
+
+	}
+
+	std::string vecString = stringify(newVec);
+
+	if (vecString == "369") {
+		return true;
+	}
+	return false;
+}
+bool check357(std::vector<int> myVec) {
+
+	std::vector<int> newVec;
+
+	for (int i : myVec) {
+
+		if (i == 3) {
+			newVec.push_back(i);
+		}
+		if (i == 5) {
+			newVec.push_back(i);
+		}
+		if (i == 7) {
+			newVec.push_back(i);
+		}
+
+	}
+
+	std::string vecString = stringify(newVec);
+
+	if (vecString == "357") {
+		return true;
+	}
+	return false;
+}
+bool checkLinearConditions(std::vector<int> myVec) {
+
+	std::string vecString = stringify(myVec);
+	
+	if (vecString.find("123") != std::string::npos || vecString.find("456") != std::string::npos ||
+		vecString.find("789") != std::string::npos) {
+			return true;
+		}
+		return false;
+
+}
+
+void clearBoard() {
+	board6.replace(56, 1, " ");
+	board6.replace(60, 1, " ");
+	board6.replace(64, 1, " ");
+	board4.replace(56, 1, " ");
+	board4.replace(60, 1, " ");
+	board4.replace(64, 1, " ");
+	board2.replace(56, 1, " ");
+	board2.replace(60, 1, " ");
+	board2.replace(64, 1, " ");
+}

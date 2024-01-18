@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <iomanip>
 #include "Header.h"
 
 /*
@@ -65,6 +66,21 @@ int main()
 {
 
     printBoard();
+    clearBoard();
+    std::cout << std::setw(73) << std::setfill(' ') << 
+        "Welcome to Tic-Tac-Toe!\n";
+    std::cout << std::setw(100) << std::setfill(' ') << 
+        "The rules are very simple: to make a move, select the number of the square you\n";
+    std::cout << std::setw(101) << std::setfill(' ') << 
+        "want to play (the numbers ^ up there),  until one player gets 3 in a row, either\n";
+    std::cout << std::setw(101) << std::setfill(' ') << 
+"vertically, horizontally, or diagonally. But you know this already. I don't know\n";
+    std::cout << std::setw(81) << std::setfill(' ') << 
+"                   why I'm bothering to write this . . .\n\n";
+    std::cout << std::setw(66) << std::setfill(' ') << 
+"                                 Enjoy!\n\n";
+    std::cout << std::setw(79) << std::setfill(' ') << 
+        "(p.s. don't enter a character or string other than 'q', or 'y' / 'n' at the \"Play again?\" prompt. This breaks the game.)\n\n";
     game();
 
     return 0;
