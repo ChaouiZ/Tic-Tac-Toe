@@ -23,19 +23,27 @@ void game() {
 
 	if(gameActive){
 		playerOneSelect();
-		updateBoard1();
-		printBoard();
+		if(gameActive){
+			updateBoard1();
+			printBoard();
+		}
 	}
 	
 	
 	if(gameActive){
 		playerTwoSelect();
-		updateBoard2();
-		printBoard();
+		if(gameActive){
+			updateBoard2();
+			printBoard();
+		}
 	}
 
 
-	displayScore();
+	if (gameActive) {
+		game();
+			}
+
+	//displayScore();
 
 
 }
@@ -54,13 +62,16 @@ void playerOneSelect() {
 			return;
 		}
 	}
-	if (spaceSelection1 > 9 || spaceSelection1 < 1) {
-		std::cout << std::endl << std::setw(93) << std::setfill(' ') <<
-			"Invalid entry. Must be an integer between 1 and 9. Try again.\n\n";
+	if ((spaceSelection1 > 9 || spaceSelection1 < 1) && spaceSelection1 != 0) {
+		std::cout << std::endl << std::setw(88) << std::setfill(' ') <<
+			"Invalid entry.  Select an integer between 1 and 9.\n\n";
 		playerOneSelect();
 		return;
 	}
 
+	if (spaceSelection1 == 0) {
+		quitGame();
+	}
 
 	player1Spaces.push_back(spaceSelection1);
 	occupiedSpaces.push_back(spaceSelection1);
@@ -69,8 +80,11 @@ void playerOneSelect() {
 		bool check1 = winChecker(player1Spaces);
 
 		if (check1) {
-			std::cout << "\n\n\n" << std::setw(67) << std::setfill(' ') << "Player 1 Wins!";
+			updateBoard1();
+			printBoard();
+			std::cout << "\n\n\n" << std::setw(68) << std::setfill(' ') << "Player 1 Wins!!";
 			gameActive = false;
+			playAgain();
 			return;
 		}
 
@@ -81,6 +95,7 @@ void playerOneSelect() {
 			if (!checkTie) {
 				std::cout << "\n\n\n" << std::setw(63) << std::setfill(' ') << "Draw!";
 				gameActive = false;
+				playAgain();
 				return;
 			}
 		}
@@ -105,6 +120,17 @@ void playerTwoSelect() {
 				return;
 			}
 		}
+
+		if ((spaceSelection2 > 9 || spaceSelection2 < 1) && spaceSelection2 != 0) {
+			std::cout << std::endl << std::setw(88) << std::setfill(' ') <<
+				"Invalid entry.  Select an integer between 1 and 9.\n\n";
+			playerOneSelect();
+			return;
+		}
+		if (spaceSelection2 == 0) {
+			quitGame();
+		}
+
 		player2Spaces.push_back(spaceSelection2);
 		occupiedSpaces.push_back(spaceSelection2);
 
@@ -116,7 +142,10 @@ void playerTwoSelect() {
 		bool check2 = winChecker(player2Spaces);
 
 		if (check2) {
-			std::cout << "\n\n\n" << std::setw(67) << std::setfill(' ') << "Player 2 Wins!";
+			updateBoard2();
+			printBoard();
+			std::cout << "\n\n\n" << std::setw(68) << std::setfill(' ') << "Player 2 Wins!!";
+			playAgain();
 			gameActive = false;
 			return;
 		}
@@ -126,44 +155,44 @@ void playerTwoSelect() {
 
 }
 
-void displayScore() {
-
-	if (gameActive) {
-		game();
-	}
-	return;
-
-	if (player1Spaces.size() == 5) {
-
-		std::cout << "Player 1 has spaces ";
-		for (int i : player1Spaces) {
-			std::cout << i << ", ";
-		}
-		std::cout << "\n\n";
-
-		std::cout << "Player 2 has spaces ";
-		for (int i : player2Spaces) {
-			std::cout << i << ", ";
-		}
-		std::cout << "\n\n";
-
-		bool player1Result = winChecker(player1Spaces);
-		bool player2Result = winChecker(player2Spaces);
-
-		if (player1Result) {
-			std::cout << "Player 1 Wins!\n\n";
-			return;
-		}
-		else if (player2Result) {
-			std::cout << "Player 2 Wins!\n\n";
-			return;
-		}
-		else {
-			std::cout << std::setw(79) << std::setfill(' ') << "Draw!\n\n";
-
-		}
-	}
-}
+//void displayScore() {
+//
+//	if (gameActive) {
+//		game();
+//	}
+//	return;
+//
+//	if (player1Spaces.size() == 5) {
+//
+//		std::cout << "Player 1 has spaces ";
+//		for (int i : player1Spaces) {
+//			std::cout << i << ", ";
+//		}
+//		std::cout << "\n\n";
+//
+//		std::cout << "Player 2 has spaces ";
+//		for (int i : player2Spaces) {
+//			std::cout << i << ", ";
+//		}
+//		std::cout << "\n\n";
+//
+//		bool player1Result = winChecker(player1Spaces);
+//		bool player2Result = winChecker(player2Spaces);
+//
+//		if (player1Result) {
+//			std::cout << "Player 1 Wins!\n\n";
+//			return;
+//		}
+//		else if (player2Result) {
+//			std::cout << "Player 2 Wins!\n\n";
+//			return;
+//		}
+//		else {
+//			std::cout << std::setw(79) << std::setfill(' ') << "Draw!\n\n";
+//
+//		}
+//	}
+//}
 
 std::string stringify(std::vector<int> myVec) {
 
@@ -680,4 +709,33 @@ void clearBoard() {
 	board2.replace(56, 1, " ");
 	board2.replace(60, 1, " ");
 	board2.replace(64, 1, " ");
+}
+
+
+void playAgain() {
+	std::cout << "\n\n" << std::setw(69) << std::setfill(' ') << "Play again? (y/n)";
+	std::cout << "\n\n                                                            ";
+	char anotherGame;
+	std::cin >> anotherGame;
+
+	if (anotherGame == 'y') {
+		gameActive = true;
+		clearBoard();
+		printBoard();
+		player1Spaces.clear();
+		player2Spaces.clear();
+		occupiedSpaces.clear();
+		game();
+		return;
+	}
+
+	std::cout << "\n\n";
+
+}
+
+void quitGame() {
+
+	gameActive = false;
+	game();
+	return;
 }

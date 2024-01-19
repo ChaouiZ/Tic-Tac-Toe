@@ -79,9 +79,10 @@ int main()
 "                   why I'm bothering to write this . . .\n\n";
     std::cout << std::setw(66) << std::setfill(' ') << 
 "                                 Enjoy!\n\n";
-    std::cout << std::setw(79) << std::setfill(' ') << 
-        "(p.s. don't enter a character or string other than 'q', or 'y' / 'n' at the \"Play again?\" prompt. This breaks the game.)\n\n";
+    std::cout << std::setw(116) << std::setfill(' ') << 
+        "(p.s. don't enter any text characters other than 'y' or 'n' at the \"Play again?\" prompt or the game breaks.)\n\n";
     game();
+    std::cout << "\n\n" << std::setw(72) << std::setfill(' ') << "Thanks for playing!\n\n";
 
     return 0;
 }
