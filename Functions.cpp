@@ -43,9 +43,6 @@ void game() {
 		game();
 			}
 
-	//displayScore();
-
-
 }
 
 void playerOneSelect() {
@@ -94,6 +91,8 @@ void playerOneSelect() {
 
 			if (!checkTie) {
 				std::cout << "\n\n\n" << std::setw(63) << std::setfill(' ') << "Draw!";
+				updateBoard1();
+				printBoard();
 				gameActive = false;
 				playAgain();
 				return;
@@ -154,45 +153,6 @@ void playerTwoSelect() {
 	return;
 
 }
-
-//void displayScore() {
-//
-//	if (gameActive) {
-//		game();
-//	}
-//	return;
-//
-//	if (player1Spaces.size() == 5) {
-//
-//		std::cout << "Player 1 has spaces ";
-//		for (int i : player1Spaces) {
-//			std::cout << i << ", ";
-//		}
-//		std::cout << "\n\n";
-//
-//		std::cout << "Player 2 has spaces ";
-//		for (int i : player2Spaces) {
-//			std::cout << i << ", ";
-//		}
-//		std::cout << "\n\n";
-//
-//		bool player1Result = winChecker(player1Spaces);
-//		bool player2Result = winChecker(player2Spaces);
-//
-//		if (player1Result) {
-//			std::cout << "Player 1 Wins!\n\n";
-//			return;
-//		}
-//		else if (player2Result) {
-//			std::cout << "Player 2 Wins!\n\n";
-//			return;
-//		}
-//		else {
-//			std::cout << std::setw(79) << std::setfill(' ') << "Draw!\n\n";
-//
-//		}
-//	}
-//}
 
 std::string stringify(std::vector<int> myVec) {
 

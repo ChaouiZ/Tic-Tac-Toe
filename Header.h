@@ -24,7 +24,6 @@ extern std::string board7;
 void game();
 void playerOneSelect();
 void playerTwoSelect();
-//void displayScore();
 std::string stringify(std::vector<int>);
 bool winChecker(std::vector<int>);
 void printBoard();
