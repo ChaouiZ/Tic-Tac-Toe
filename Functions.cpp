@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <iomanip>
-#include "header.h" 
+#include "Header.h" 
 
 std::vector<int> occupiedSpaces;
 std::vector<int> player1Spaces;
